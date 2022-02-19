@@ -1,4 +1,3 @@
 # slides
 
-* test
-* test2
+* [Test](https://takuto-n.github.io/slides/test/#1)
