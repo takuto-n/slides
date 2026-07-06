@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>出版・エンタメ業界対策 10問区切りドリル (進捗保存＆復習機能付)</title>
+    <title>出版・エンタメ業界対策 10問チェックドリル (ランダム出題版)</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
@@ -12,13 +13,15 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
 
+    <!-- Header -->
     <header class="bg-slate-800 border-b border-slate-700 py-4 px-6 shadow-md sticky top-0 z-50">
         <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-xl font-bold tracking-wider text-cyan-400">マスコミ・出版業界対策：10問チェックドリル</h1>
-                <p class="text-[11px] text-slate-400 mt-0.5">※10問ごとに記憶チェック＆ブラウザに自動保存されます</p>
+                <h1 class="text-xl font-bold tracking-wider text-cyan-400">マスコミ・出版業界対策：10問ランダムドリル</h1>
+                <p class="text-[11px] text-slate-400 mt-0.5">※順番の罠を防ぐため、問題は毎回シャッフルされて出題されます</p>
             </div>
             
+            <!-- Navigation Tabs -->
             <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
                 <button id="tab-quiz" onclick="switchTab('quiz')" class="px-4 py-1.5 rounded-lg text-sm font-bold bg-cyan-500 text-slate-950 shadow transition-all cursor-pointer">
                     クイズに挑戦
@@ -30,38 +33,62 @@
         </div>
     </header>
 
+    <!-- Main Content -->
     <main class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-2xl">
-            
-            <div id="toast-msg" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg z-50 animate-bounce">
-                前回の進捗ステージから再開します！
-            </div>
 
+            <!-- ================= QUIZ MODE VIEW ================= -->
             <div id="quiz-view" class="space-y-6">
                 
-                <div id="stage-select-screen" class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 space-y-6">
+                <!-- STAGE SELECT SCREEN (Top Menu) -->
+                <div id="stage-select-screen" class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 space-y-5">
                     <div class="text-center space-y-1">
-                        <h2 class="text-lg font-bold text-slate-200">挑戦するステージ（10問単位）を選択してください</h2>
-                        <p class="text-xs text-slate-400">集中して10問ずつ解き、覚えているかチェックできます</p>
+                        <h2 class="text-lg font-bold text-slate-200">挑戦するモード・ステージを選択してください</h2>
+                        <p class="text-xs text-slate-400">選んだ区切りの中で10問がシャッフル出題されます</p>
+                    </div>
+
+                    <!-- NEW: 全体完全ランダム 実力テスト枠 -->
+                    <div class="bg-gradient-to-r from-cyan-950/40 to-slate-800 border border-cyan-500/30 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-center gap-3">
+                        <div>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="text-[10px] bg-cyan-500 text-slate-950 font-extrabold px-1.5 py-0.5 rounded uppercase tracking-wider">実力試し</span>
+                                <h3 class="text-sm font-bold text-slate-200">100問全体から完全にランダムで10問出題</h3>
+                            </div>
+                            <p class="text-xs text-slate-400">ジャンルを跨いでランダムに記憶力をチェックします</p>
+                        </div>
+                        <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                            <div id="random-best-display" class="text-xs text-slate-400 font-mono">最高: -/10</div>
+                            <button onclick="startFullRandomStage()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold text-xs py-2.5 px-4 rounded-lg shadow transition-all cursor-pointer">
+                                テスト開始
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-xs font-bold text-slate-400 border-t border-slate-700/60 pt-4 pl-1">
+                        ■ ステージ別（10問固定エリア内でのシャッフル）
                     </div>
                     
+                    <!-- Stage Grid -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="stage-buttons-container">
-                        </div>
+                        <!-- Dynamic Buttons Injection -->
+                    </div>
 
                     <div class="text-center pt-2 border-t border-slate-700/60">
                         <button onclick="confirmAllReset()" class="text-xs text-rose-400 hover:text-rose-300 underline cursor-pointer">
-                            すべての全般進捗・記録をリセットする
+                            すべての過去スコア・記録をリセットする
                         </button>
                     </div>
                 </div>
 
+                <!-- PLAYING SCREEN -->
                 <div id="playing-screen" class="hidden bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
+                    <!-- Progress Bar & Stage Return -->
                     <div class="space-y-2">
                         <div class="flex justify-between items-center text-xs text-slate-400 font-mono">
                             <span id="progress-text">ステージ 1 : 第 1 問 / 10問</span>
                             <div class="flex items-center gap-3">
                                 <span id="category-badge" class="bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-md font-medium">ジャンル</span>
-                                <button onclick="returnToStageSelect()" class="text-cyan-400 hover:text-cyan-300 underline cursor-pointer text-[11px]">ステージ選択に戻る</button>
+                                <button onclick="returnToStageSelect()" class="text-cyan-400 hover:text-cyan-300 underline cursor-pointer text-[11px]">戻る</button>
                             </div>
                         </div>
                         <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
@@ -69,6 +96,7 @@
                         </div>
                     </div>
 
+                    <!-- Question Core -->
                     <div class="space-y-6">
                         <div class="bg-slate-850 p-5 rounded-xl border border-slate-750">
                             <p id="question-text" class="text-lg font-medium leading-relaxed text-slate-100">問題文</p>
@@ -83,6 +111,7 @@
                             正解と解説を表示する
                         </button>
 
+                        <!-- Answer Area -->
                         <div id="answer-area" class="hidden space-y-5 border-t border-slate-700 pt-5">
                             <div class="bg-emerald-950/40 border border-emerald-500/30 p-4 rounded-xl">
                                 <span class="text-xs text-emerald-400 font-bold uppercase tracking-wider block mb-1">■ 正解</span>
@@ -104,31 +133,33 @@
                     </div>
                 </div>
 
+                <!-- STAGE RESULT SCREEN (10問チェック画面) -->
                 <div id="stage-result-screen" class="hidden bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 text-center space-y-6 py-8">
                     <div class="space-y-2">
                         <h2 class="text-2xl font-bold text-cyan-400"><span id="result-stage-title">ステージ1</span> 終了！</h2>
-                        <p class="text-sm text-slate-400">覚えているかチェックが完了しました。</p>
+                        <p class="text-sm text-slate-400">ランダム10問のチェックが完了しました。</p>
                     </div>
                     <div class="inline-block bg-slate-900 border border-slate-700 rounded-2xl p-6 px-12 shadow-inner">
-                        <div class="text-xs text-slate-400">この10問の正解数</div>
+                        <div class="text-xs text-slate-400">今回の正解数</div>
                         <div class="text-5xl font-extrabold text-cyan-400 my-2 font-mono"><span id="stage-score-display">0</span> <span class="text-xl text-slate-500">/ 10</span></div>
                         <div class="text-xs text-slate-400">正解率: <span id="stage-accuracy-display">0</span>%</div>
                     </div>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-md mx-auto pt-4">
                         <button onclick="reviewCurrentStage()" class="bg-amber-600 hover:bg-amber-500 text-white font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer text-sm shadow-md">
-                            この10問をもう一度（復習）
+                            もう一度同じ条件で（復習）
                         </button>
                         <button id="next-stage-btn" onclick="goToNextStage()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold py-3 px-4 rounded-xl transition-all cursor-pointer text-sm shadow-md">
                             次の10問へ進む
                         </button>
                         <button onclick="returnToStageSelect()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer text-sm shadow-md">
-                            ステージ選択へ
+                            メニューに戻る
                         </button>
                     </div>
                 </div>
             </div>
 
+            <!-- ================= LIST MODE VIEW ================= -->
             <div id="list-view" class="hidden space-y-4">
                 <div class="flex flex-col sm:flex-row gap-3 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-md">
                     <input type="text" id="search-input" oninput="filterList()" placeholder="キーワードで検索（例: 講談社、映画、フリーレン、インフレ...）" class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors">
@@ -150,18 +181,20 @@
         </div>
     </main>
 
+    <!-- Footer -->
     <footer class="bg-slate-950 py-3 text-center text-xs text-slate-500 border-t border-slate-850">
-        &copy; 2026 出版・エンタメ業界総合試験対策 10問区切りチェックドリル v4.
+        &copy; 2026 出版・エンタメ業界総合試験対策 10問ランダムチェックドリル v5.
     </footer>
 
+    <!-- Script -->
     <script>
-        // マスターデータ 100問 (※データ構造・内容は変更していません)
+        // マスターデータ 100問 (※完全維持)
         const quizData = [
             // --- 第1章：出版・文学賞（20問） ---
             {c:"出版・文学賞", q:"第174回（2026年1月発表）芥川賞を受賞した鳥山まことの、建築文学とも評される作品は？", a:"時の家", e:"三田文學新人賞でデビューした新鋭による作品。芥川賞・直木賞は文藝春秋が主催し、全出版社志望者の必須時事。"},
             {c:"出版・文学賞", q:"第174回芥川賞を『時の家』と同時にダブル受賞した、畠山丑雄の作品は？", a:"叫び", e:"幻と現実の二つの万博を貫く、封印されていた声を紡ぎ出した野心的な政治小説。"},
             {c:"出版・文学賞", q:"第174回直木賞を、最初の投票でほぼ満票を獲得して受賞した嶋津輝の連作短編集は？", a:"カフェーの帰り道", e:"大正から昭和の東京・上野を舞台に、カフェーで朗らかに働く個性豊かな女給たちを描いた物語。"},
-            {c:"出版・文学賞", q:"作家生活15周年記念作品として執筆され、2026年本屋大賞を受賞した朝井リョウの長編小説は？", a:"イン・ザ・メガチャーチ", e:"アイドルの運営、繊細な大学生など現代社会の心理をえぐる傑作。本屋大賞は新潮社や文藝春秋など他社作品も毎年大ヒットする重要賞。"},
+            {c:"出版・文学賞", q:"作家生活15周年記念作品として執筆され、2026年本屋大賞を受賞した朝井リョウの長編小説は？", a:"イン・ザ・メガチャーチ", e:"アイドルの運営、繊繊な大学生など現代社会の心理をえぐる傑作。本屋大賞は新潮社や文藝春秋など他社作品も毎年大ヒットする重要賞。"},
             {c:"出版・文学賞", q:"2026年本屋大賞で第2位となった、佐藤正午の過去の秘密が明かされる人間ドラマを描いた作品は？", a:"熟柿", e:"轢き逃げ、園児連れ去りといった罪を背負った女性とかかわる人々を描いた、岩波書店から刊行された長編。"},
             {c:"出版・文学賞", q:"2024年に『成瀬は天下を取りにいく』で本屋大賞を受賞し、滋賀県を舞台にしたエンタメ小説で旋風を巻き起こした新潮社刊行の著者は？", a:"宮島未奈", e:"地方を舞台にした作品のメガヒットは、出版業界における「地方書店活性化」の文脈でもよく語られます。"},
             {c:"出版・文学賞", q:"講談社が発行する、純文学の二大新人賞の一角「群像新人文学賞」の母体となっている月刊文芸誌は？", a:"群像", e:"新潮社の『新潮』、文藝春秋の『文學界』、集英社の『すばる』、河出書房新社の『文藝』と並ぶ五大文芸誌。"},
@@ -171,12 +204,12 @@
             {c:"出版・文学賞", q:"近年、街の書店（独立系書店）が減少する中、独自の選書やカフェ併設で注目を集める書店の形態を何と呼ぶか？", a:"セレクトショップ型書店（独立系書店）", e:"文脈棚の構築や、本をコミュニケーションツールとして扱う新しい書店のあり方。"},
             {c:"出版・文学賞", q:"KADOKAWAが運営する、日本最大級のWeb小説投稿サイトで、数多くのアニメ化原作コミックを生み出しているプラットフォームは？", a:"カクヨム", e:"星海社や電撃文庫などのライトノベル、コミカライズの原作供給源として非常に重要です。"},
             {c:"出版・文学賞", q:"2024年に『東京都同情塔』で芥川賞を受賞し、執筆時の生成AI活用を明かして世界的に話題となった、中央公論新社等でも活躍する作家は？", a:"九段理江", e:"生成AIの普及と、現代社会の言葉のあり方を鋭く風刺した作品として今なお重要トピックです。"},
-            {c:"出版・文学賞", q:"芥川賞・直木賞の選考会が毎年2回（1月・7月）開催されることで有名な、東京・築地にある老舗料テリアの名称は？", a:"新喜楽（しんきらく）", e:"文壇の歴史を象徴する場所であり、マスコミ各社が速報を待つ現場です。"},
+            {c:"出版・文学賞", q:"芥川賞・直木賞の選考会が毎年2回（1月・7月）開催されることで有名な、東京・築地にある老舗料亭の名称は？", a:"新喜楽（しんきらく）", e:"文壇の歴史を象徴する場所であり、マスコミ各社が速報を待つ現場です。"},
             {c:"出版・文学賞", q:"スマートフォンの普及とともに市場が拡大している、本を「耳で聴く」読書スタイルの総称は？", a:"オーディオブック", e:"Amazon傘下のAudibleや、オトバンクのaudiobook.jpなどが市場を牽引。"},
             {c:"出版・文学賞", q:"直木賞の正式名称は何というか？", a:"直木三十五賞", e:"大衆文芸の発展に貢献した作家・直木三十五を記念して、菊池寛が創設しました。"},
             {c:"出版・文学賞", q:"芥川賞の正式名称は何というか？", a:"芥川龍之介賞", e:"大正・昭和初期を代表する文豪・芥川龍之介の業績を讃え、新進の純文学作家に贈られます。"},
             {c:"出版・文学賞", q:"近年、電子書籍の市場規模において、紙の出版物を上回る圧倒的な売上を記録しているコンテンツジャンルは何か？", a:"コミック（マンガ）", e:"出版科学研究所のデータでも、電子出版市場の約9割近くをマンガが占めています。"},
-            {c:"出版・文学賞", q:"講談社、小学館、集英社などの大手出版社が共同で取り組んでいる、ネット上の海賊版対策サイトの公式認定マークは？", a:"ABJマーク", e:"「Authorized Books of Japan」の略。海賊版サイトの撲滅に向けた業界の重要施施策。"},
+            {c:"出版・文学賞", q:"講談社、小学館、集英社などの大手出版社が共同で取り組んでいる、ネット上の海賊版対策サイトの公式認定マークは？", a:"ABJマーク", e:"「Authorized Books of Japan」の略。海賊版サイトの撲滅に向けた業界の重要施策。"},
             {c:"出版・文学賞", q:"海外の権威ある文学賞で、近年日本人作家の翻訳版が多数ノミネートされている、英国の文学賞は？", a:"ブッカー賞（国際ブッカー賞）", e:"小川洋子や多和田葉子、村上春樹などの作品が世界中で評価される指標となっています。"},
 
             // --- 第2章：マンガ・アニメ業界（25問） ---
@@ -210,7 +243,7 @@
             {c:"芸能・音楽・映画", q:"2026年放送のNHK大河ドラマ『豊臣兄弟！』で、主人公である豊臣秀長を演じている実力派俳優は？", a:"仲野太賀", e:"大河ドラマの動向は、エンタメ・マスコミ業界の一般常識として毎年必ずチェックが必要。"},
             {c:"芸能・音楽・映画", q:"2025年に放送され、江戸のメディア王・蔦屋重三郎の生涯を描いた大河ドラマ『べらぼう』の主演俳優は？", a:"横浜流星", e:"浮世絵や貸本屋などの「江戸の出版ビジネス」がテーマとなり、マスコミ志望者間で話題に。"},
             {c:"芸能・音楽・映画", q:"日本の「三大映画会社（配給大手）」といえば、東宝、東映と、あと一つはどこか？", a:"松竹", e:"日本の映画興行はこの3社を中心に回っており、特に東宝の興行収入シェアは圧倒的。"},
-            {c:"芸能・音楽・映画", q:"映画『ゴジラ-1.0』が米アカデミー賞でアジア映画初の快挙を成し遂げた、受賞した部門の名称は？", a:"視覚効果賞（VFX部門）", e:"山崎貴監督が率いる日本のVFX技術が、ハリウッドを震撼させた歴史的事象。"},
+            {c:"芸能・音楽・映画", q:"映画『ゴジラ-1.0』が米アカデキー賞でアジア映画初の快挙を成し遂げた、受賞した部門の名称は？", a:"視覚効果賞（VFX部門）", e:"山崎貴監督が率いる日本のVFX技術が、ハリウッドを震撼させた歴史的事象。"},
             {c:"芸能・音楽・映画", q:"2024〜2026年にかけて世界的なメガヒットを記録し、ビルボードのグローバルチャート1位を獲得したCreepy Nutsの楽曲タイトルは？", a:"Bling-Bang-Bang-Born", e:"アニメ『マッシュル-MASHLE-』のOP。TikTokでのダンス動画拡散（ミーム化）が世界ヒットの導火線に。"},
             {c:"芸能・音楽・映画", q:"『ケセラセラ』や『ダンスホール』など、圧倒的な歌唱力とキャッチーな楽曲でZ世代から絶大な支持を集める3人組ロックバンドは？", a:"Mrs. GREEN APPLE", e:"現在の音楽サブスク再生回数上位を独占する、現在の邦楽シーンの象徴。"},
             {c:"芸能・音楽・映画", q:"YouTubeのチャンネル登録者数が日本人ソロアーティストとしてトップクラスであり、2025-2026年も世界ツアーを成功させたシンガーソングライターは？", a:"藤井風", e:"アジア圏のみならず、欧米でもストリーミングを通じてバイラルヒットを連発。"},
@@ -255,7 +288,7 @@
             {c:"世界情勢・一般時事", q:"日本の少子化深刻度の基準となる、1人の女性が一生の間に生むとされる子どもの平均数を表す統計指標は？", a:"合計特殊出生率", e:"日本は過去最低水準の更新が続いており、労働力不足や社会保障制度の維持が国の最大課題。"},
             {c:"世界情勢・一般時事", q:"主要先進7カ国首脳会議（G7）のメンバーは、日本、アメリカ、イギリス、フランス、ドイツ、イタリアと、どこか？", a:"カナダ", e:"国際社会の政治・経済の諸課題を協議する枠組み。"},
             {c:"世界情勢・一般時事", q:"2026年夏に開催される、サッカーのワールドカップ（W杯）を共同開催する3カ国は、アメリカ、メキシコと、どこか？", a:"カナダ", e:"史上初めて48カ国が出場する大規模な大会であり、北米3カ国が舞台となります。"},
-            {c:"世界情勢・一般時事", q:"モノの価格（物価）が継続的に上昇し、相対的にお金の価値が下がっていく経済現象を何というか？", a:"インフレ", e:"資源高や円安を背景に、日本でも数十年のデフレ脱却から「インフレ社会」への移行と賃上げが叫ばれています。"},
+            {c:"世界情勢・一般時事", q:"資源高や円安を背景に、日本でも数十年のデフレ脱却から「インフレ社会」への移行と賃上げが叫ばれています。モノの価格（物価）が継続的に上昇し、相対的にお金の価値が下がっていく経済現象を何というか？", a:"インフレ", e:"数十年のデフレ脱却から「インフレ社会」への移行と賃上げが叫ばれています。"},
             {c:"世界情勢・一般時事", q:"外国為替市場において、米ドルなどの主要通貨に対して日本円の価値が歴史的な水準まで下がっている現象を何というか？", a:"円安", e:"輸出企業の利益を押し上げる一方、エネルギーや原材料、食品などの輸入コストを高騰させ生活を直撃。"},
             {c:"世界情勢・一般時事", q:"日本の民法改正により、2022年4月から成人年齢は何歳に引き下げられたか？", a:"18歳", e:"若者の社会的・経済的自立を促す目的。親の同意なしでクレジットカードの契約などが可能になりました。"},
             {c:"世界情勢・一般時事", q:"近年の国連の推計において、地球全体の総人口は約何億人を突破したとされているか？", a:"80億人", e:"南アジアやアフリカを中心に人口爆発が続く一方、先進国では深刻な少子高齢化が進み、二極化しています。"},
@@ -265,31 +298,52 @@
             {c:"世界情勢・一般時事", q:"2024年に可決され、社会保障やパートタイム労働者の手取り額に直結する「〇〇万円の壁」の撤廃に向けた政府の税制・年金制度改革議論の対象金額は？", a:"106万円（または130万円）", e:"働き控えを防ぎ、深刻な人手不足を解消するための労働市場の最重要政策課題。"},
             {c:"世界情勢・一般時事", q:"生成AIによる文章や画像の大量生成が進む中、クリエイターの権利を守るために文化庁が2024年以降に発表・改定を続けている指針の名称は何か？", a:"AIと著作権に関する考え方", e:"AIの開発（学習）段階と、生成・利用段階での著作権侵害の線引きを示した、クリエイティブ業界最重要の法務トピック。"},
             {c:"世界情勢・一般時事", q:"近年、SNS上での誹謗中傷やデマ拡散を防止するため、発信者の情報開示手続きを簡素化・迅速化させた日本の法律の略称は何か？", a:"プロバイダ責任制限法", e:"ネット上の個人の権利侵害を守るため、マスコミ各社も運用の動向を注視しています。"},
-            {c:"世界情勢・一般時事", q:"大正15年（1926年）8月8日に創業され、2026年についに創業100周年の歴史的な節目を迎えた大手出版社は？", a:"集英社", e:"小学館の娯楽誌部門から独立してスタート。全出版社の中でも歴史の節目として象徴的な時事です。"}
+            {c:"世界情勢・一般時事", q:"大正15年（1926年）8月8日に創業され、2026年についに創業100周線の歴史的な節目を迎えた大手出版社は？", a:"集英社", e:"小学館の娯楽誌部門から独立してスタート。全出版社の中でも歴史の節目として象徴的な時事です。"}
         ];
 
         // 状態保持用のローカルストレージ・キー
-        const STORAGE_KEY_SCORES = "macc_quiz_stage_scores"; // 各ステージの過去最高点配列
+        const STORAGE_KEY_SCORES = "macc_quiz_stage_scores_v5";
+        const STORAGE_KEY_RANDOM_BEST = "macc_quiz_random_best_v5";
 
-        let currentStage = 0; // 0〜9 (10ステージ)
-        let stageQuestions = []; // 現在のステージの10問
-        let currentStageIndex = 0; // ステージ内インデックス (0〜9)
-        let stageScore = 0; // 現在のステージでの正解数
-        let highestScores = Array(10).fill("-"); // 各ステージの最高点記録
+        let currentStage = 0; // 0〜9 (通常ステージ), -1 (完全ランダムモード)
+        let isRandomMode = false;
+        let stageQuestions = [];
+        let currentStageIndex = 0;
+        let stageScore = 0;
+        let highestScores = Array(10).fill("-");
+        let randomBestScore = "-";
 
-        const toastMsg = document.getElementById("toast-msg");
+        // 動的なインデックス（元の問題番号）の初期割り振り
+        quizData.forEach((item, index) => {
+            item.originalNo = index + 1;
+        });
+
+        // 配列シャッフル関数（フィッシャー・イェーツ アルゴリズム）
+        function shuffle(array) {
+            const clone = [...array];
+            for (let i = clone.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [clone[i], clone[j]] = [clone[j], clone[i]];
+            }
+            return clone;
+        }
 
         // 初期化ロード
         function initApp() {
             const savedScores = localStorage.getItem(STORAGE_KEY_SCORES);
-            if (savedScores) {
-                highestScores = JSON.parse(savedScores);
-            }
+            if (savedScores) highestScores = JSON.parse(savedScores);
+
+            const savedRandomBest = localStorage.getItem(STORAGE_KEY_RANDOM_BEST);
+            if (savedRandomBest) randomBestScore = savedRandomBest;
+
             renderStageSelect();
         }
 
-        // ステージ選択画面のボタン群を生成
+        // ステージ選択画面の描画
         function renderStageSelect() {
+            // 完全ランダムモードの最高記録を反映
+            document.getElementById("random-best-display").innerText = `最高: ${randomBestScore}/10`;
+
             const container = document.getElementById("stage-buttons-container");
             container.innerHTML = "";
 
@@ -297,7 +351,6 @@
                 const startNum = i * 10 + 1;
                 const endNum = startNum + 9;
                 
-                // 代表的な収録ジャンル目安
                 let hintText = "総合エンタメ・時事";
                 if (i === 0 || i === 1) hintText = "出版・文学賞・取次・再販";
                 else if (i >= 2 && i <= 4) hintText = "マンガ・アニメ・アプリ・制作会社";
@@ -313,7 +366,7 @@
                 button.onclick = () => startStage(i);
                 button.innerHTML = `
                     <div class="flex justify-between items-center w-full mb-1">
-                        <span class="text-sm font-bold text-cyan-400 group-hover:text-cyan-300">ステージ ${i + 1} <span class="text-xs text-slate-400 font-normal">(${startNum}〜${endNum}問)</span></span>
+                        <span class="text-sm font-bold text-cyan-400 group-hover:text-cyan-300">ステージ ${i + 1} <span class="text-xs text-slate-500 font-normal">(${startNum}〜${endNum})</span></span>
                         ${scoreBadge}
                     </div>
                     <span class="text-xs text-slate-400 leading-tight">${hintText}</span>
@@ -322,11 +375,14 @@
             }
         }
 
-        // ステージ開始
+        // 1. 各ステージ内でのランダム出題開始
         function startStage(stageNum) {
+            isRandomMode = false;
             currentStage = stageNum;
             const startIdx = stageNum * 10;
-            stageQuestions = quizData.slice(startIdx, startIdx + 10);
+            
+            // 該当エリアの10問を抽出した上で、毎回ランダムに並べ替え
+            stageQuestions = shuffle(quizData.slice(startIdx, startIdx + 10));
             
             currentStageIndex = 0;
             stageScore = 0;
@@ -338,22 +394,44 @@
             loadStageQuestion();
         }
 
-        // ステージ内の問題ロード
+        // 2. 100問全体からの完全ランダム出題開始（新機能）
+        function startFullRandomStage() {
+            isRandomMode = true;
+            currentStage = -1;
+
+            // 全100問をシャッフルし、先頭の10問だけを贅沢に抽出
+            stageQuestions = shuffle(quizData).slice(0, 10);
+
+            currentStageIndex = 0;
+            stageScore = 0;
+
+            document.getElementById("stage-select-screen").classList.add("hidden");
+            document.getElementById("stage-result-screen").classList.add("hidden");
+            document.getElementById("playing-screen").classList.remove("hidden");
+
+            loadStageQuestion();
+        }
+
+        // 問題の読み込み表示
         function loadStageQuestion() {
             document.getElementById("show-answer-btn").classList.remove("hidden");
             document.getElementById("answer-area").classList.add("hidden");
             document.getElementById("user-memo").value = "";
 
             const currentQuiz = stageQuestions[currentStageIndex];
-            const displayQuestionNum = currentStage * 10 + (currentStageIndex + 1);
 
-            document.getElementById("progress-text").innerText = `ステージ ${currentStage + 1} : 第 ${currentStageIndex + 1} 問 / 10問 (全体: ${displayQuestionNum}/100問)`;
+            if (isRandomMode) {
+                document.getElementById("progress-text").innerText = `実力テスト : 第 ${currentStageIndex + 1} 問 / 10問 (元No.${currentQuiz.originalNo})`;
+            } else {
+                document.getElementById("progress-text").innerText = `ステージ ${currentStage + 1} : 第 ${currentStageIndex + 1} 問 / 10問 (元No.${currentQuiz.originalNo})`;
+            }
+
             document.getElementById("category-badge").innerText = currentQuiz.c;
             document.getElementById("progress-bar").style.width = `${(currentStageIndex + 1) * 10}%`;
             document.getElementById("question-text").innerText = currentQuiz.q;
         }
 
-        // 解答の表示
+        // 正解と解説の表示
         document.getElementById("show-answer-btn").addEventListener("click", () => {
             const currentQuiz = stageQuestions[currentStageIndex];
             document.getElementById("correct-answer").innerText = currentQuiz.a;
@@ -362,7 +440,7 @@
             document.getElementById("answer-area").classList.remove("hidden");
         });
 
-        // 正誤の記録
+        // 正誤判定入力
         function submitScore(isCorrect) {
             if (isCorrect) stageScore++;
             
@@ -374,46 +452,58 @@
             }
         }
 
-        // 10問終了後のステージリザルト表示（記憶チェックフロー）
+        // 10問終了後の記憶チェックリザルト
         function finishStage() {
             document.getElementById("playing-screen").classList.add("hidden");
             document.getElementById("stage-result-screen").classList.remove("hidden");
-
-            document.getElementById("result-stage-title").innerText = `ステージ ${currentStage + 1}`;
             document.getElementById("stage-score-display").innerText = stageScore;
             
             const accuracy = Math.round((stageScore / 10) * 100);
             document.getElementById("stage-accuracy-display").innerText = accuracy;
 
-            // 最高スコアの更新保存
-            const absolutePreviousBest = highestScores[currentStage];
-            if (absolutePreviousBest === "-" || stageScore > parseInt(absolutePreviousBest, 10)) {
-                highestScores[currentStage] = stageScore;
-                localStorage.setItem(STORAGE_KEY_SCORES, JSON.stringify(highestScores));
-            }
-
-            // 次のステージボタンの表示制御
             const nextBtn = document.getElementById("next-stage-btn");
-            if (currentStage < 9) {
-                nextBtn.classList.remove("hidden");
+
+            if (isRandomMode) {
+                // 完全ランダムモードの処理
+                document.getElementById("result-stage-title").innerText = `実力テスト`;
+                nextBtn.classList.add("hidden"); // 次のステージは存在しない
+
+                if (randomBestScore === "-" || stageScore > parseInt(randomBestScore, 10)) {
+                    randomBestScore = stageScore.toString();
+                    localStorage.setItem(STORAGE_KEY_RANDOM_BEST, randomBestScore);
+                }
             } else {
-                nextBtn.classList.add("hidden"); // ステージ10の場合は非表示
+                // 通常ステージ内シャッフルモードの処理
+                document.getElementById("result-stage-title").innerText = `ステージ ${currentStage + 1}`;
+                
+                if (currentStage < 9) nextBtn.classList.remove("hidden");
+                else nextBtn.classList.add("hidden");
+
+                const previousBest = highestScores[currentStage];
+                if (previousBest === "-" || stageScore > parseInt(previousBest, 10)) {
+                    highestScores[currentStage] = stageScore;
+                    localStorage.setItem(STORAGE_KEY_SCORES, JSON.stringify(highestScores));
+                }
             }
         }
 
-        // 現在のステージをもう一度（復習）
+        // 復習（同じ条件でもう一度）
         function reviewCurrentStage() {
-            startStage(currentStage);
+            if (isRandomMode) {
+                startFullRandomStage(); // 新たに全体からランダム10問
+            } else {
+                startStage(currentStage); // 同じステージ内で再度シャッフル
+            }
         }
 
-        // 次の10問（次のステージ）へ進む
+        // 次の10問へ
         function goToNextStage() {
-            if (currentStage < 9) {
+            if (!isRandomMode && currentStage < 9) {
                 startStage(currentStage + 1);
             }
         }
 
-        // ステージ選択に戻る
+        // メニューに戻る
         function returnToStageSelect() {
             document.getElementById("playing-screen").classList.add("hidden");
             document.getElementById("stage-result-screen").classList.add("hidden");
@@ -421,16 +511,18 @@
             renderStageSelect();
         }
 
-        // 全進捗リセット
+        // 全初期化
         function confirmAllReset() {
-            if (confirm("これまでの全ステージの最高スコア・記録をすべて削除して初期化しますか？")) {
+            if (confirm("これまでの全過去最高スコア（実力テスト含む）をすべて削除してリセットしますか？")) {
                 localStorage.removeItem(STORAGE_KEY_SCORES);
+                localStorage.removeItem(STORAGE_KEY_RANDOM_BEST);
                 highestScores = Array(10).fill("-");
+                randomBestScore = "-";
                 renderStageSelect();
             }
         }
 
-        // --- タブ切り替え制御 ---
+        // タブ切り替え
         function switchTab(mode) {
             const quizView = document.getElementById("quiz-view");
             const listView = document.getElementById("list-view");
@@ -442,7 +534,7 @@
                 listView.classList.add("hidden");
                 tabQuiz.className = "px-4 py-1.5 rounded-lg text-sm font-bold bg-cyan-500 text-slate-950 shadow transition-all cursor-pointer";
                 tabList.className = "px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400 hover:text-slate-200 transition-all cursor-pointer";
-                renderStageSelect(); // 再描画してスコア反映
+                renderStageSelect();
             } else {
                 quizView.classList.add("hidden");
                 listView.classList.remove("hidden");
@@ -452,7 +544,7 @@
             }
         }
 
-        // --- 一覧表示・検索フィルタ（前回の検索ロジックを完全維持） ---
+        // 一覧表示とフィルタリング
         function renderList() {
             const listContainer = document.getElementById("list-container");
             const searchQuery = document.getElementById("search-input").value.toLowerCase();
@@ -477,7 +569,7 @@
                     card.innerHTML = `
                         <div class="flex justify-between items-center">
                             <div class="flex items-center">
-                                <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded font-mono">Q.${index + 1}</span>
+                                <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded font-mono">Q.${item.originalNo}</span>
                                 <span class="text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded ml-2">ステージ ${belongingStage}</span>
                             </div>
                             <span class="text-xs bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded font-medium">${item.c}</span>
@@ -503,7 +595,7 @@
             renderList();
         }
 
-        // 起動処理
+        // アプリ起動
         initApp();
     </script>
 
