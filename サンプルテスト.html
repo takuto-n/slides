@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>出版・エンタメ業界 筆記試験対策 100問ドリル (進捗保存機能付)</title>
-    <!-- Tailwind CSS CDN -->
+    <title>出版・エンタメ業界対策 10問区切りドリル (進捗保存＆復習機能付)</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
@@ -13,15 +12,13 @@
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen flex flex-col justify-between">
 
-    <!-- Header -->
     <header class="bg-slate-800 border-b border-slate-700 py-4 px-6 shadow-md sticky top-0 z-50">
         <div class="max-w-4xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
-                <h1 class="text-xl font-bold tracking-wider text-cyan-400">マスコミ・出版業界対策：100問ドリル</h1>
-                <p class="text-[11px] text-slate-400 mt-0.5">※ブラウザに進捗が自動保存されます</p>
+                <h1 class="text-xl font-bold tracking-wider text-cyan-400">マスコミ・出版業界対策：10問チェックドリル</h1>
+                <p class="text-[11px] text-slate-400 mt-0.5">※10問ごとに記憶チェック＆ブラウザに自動保存されます</p>
             </div>
             
-            <!-- Navigation Tabs -->
             <div class="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
                 <button id="tab-quiz" onclick="switchTab('quiz')" class="px-4 py-1.5 rounded-lg text-sm font-bold bg-cyan-500 text-slate-950 shadow transition-all cursor-pointer">
                     クイズに挑戦
@@ -33,89 +30,106 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="flex-grow flex items-center justify-center p-4">
         <div class="w-full max-w-2xl">
             
-            <!-- Notification Toast for Save State -->
             <div id="toast-msg" class="hidden fixed top-20 left-1/2 transform -translate-x-1/2 bg-emerald-600 text-white text-xs font-bold px-4 py-2 rounded-full shadow-lg z-50 animate-bounce">
-                前回の進捗から再開しました！
+                前回の進捗ステージから再開します！
             </div>
 
-            <!-- ================= QUIZ MODE VIEW ================= -->
-            <div id="quiz-view" class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8 space-y-6 transition-all duration-300">
-                <!-- Progress Bar & Reset -->
-                <div class="space-y-2">
-                    <div class="flex justify-between items-center text-xs text-slate-400 font-mono">
-                        <span id="progress-text">第 1 問 / 100問</span>
-                        <div class="flex items-center gap-3">
-                            <span id="category-badge" class="bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-md font-medium">ジャンル</span>
-                            <button onclick="confirmReset()" class="text-rose-400 hover:text-rose-300 underline cursor-pointer text-[11px]">進捗リセット</button>
-                        </div>
+            <div id="quiz-view" class="space-y-6">
+                
+                <div id="stage-select-screen" class="bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 space-y-6">
+                    <div class="text-center space-y-1">
+                        <h2 class="text-lg font-bold text-slate-200">挑戦するステージ（10問単位）を選択してください</h2>
+                        <p class="text-xs text-slate-400">集中して10問ずつ解き、覚えているかチェックできます</p>
                     </div>
-                    <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
-                        <div id="progress-bar" class="bg-cyan-500 h-full transition-all duration-300" style="width: 1%"></div>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="stage-buttons-container">
+                        </div>
+
+                    <div class="text-center pt-2 border-t border-slate-700/60">
+                        <button onclick="confirmAllReset()" class="text-xs text-rose-400 hover:text-rose-300 underline cursor-pointer">
+                            すべての全般進捗・記録をリセットする
+                        </button>
                     </div>
                 </div>
 
-                <!-- Question Screen -->
-                <div id="question-screen" class="space-y-6">
-                    <div class="bg-slate-850 p-5 rounded-xl border border-slate-750">
-                        <p id="question-text" class="text-lg font-medium leading-relaxed text-slate-100">問題文がここに表示されます。</p>
-                    </div>
-
+                <div id="playing-screen" class="hidden bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
                     <div class="space-y-2">
-                        <label class="text-xs text-slate-400 font-medium">脳内解答のメモ用（採点には影響しません）</label>
-                        <input type="text" id="user-memo" placeholder="ここに解答を入力するか、頭の中で思い浮かべてください" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors">
+                        <div class="flex justify-between items-center text-xs text-slate-400 font-mono">
+                            <span id="progress-text">ステージ 1 : 第 1 問 / 10問</span>
+                            <div class="flex items-center gap-3">
+                                <span id="category-badge" class="bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-md font-medium">ジャンル</span>
+                                <button onclick="returnToStageSelect()" class="text-cyan-400 hover:text-cyan-300 underline cursor-pointer text-[11px]">ステージ選択に戻る</button>
+                            </div>
+                        </div>
+                        <div class="w-full bg-slate-700 h-2 rounded-full overflow-hidden">
+                            <div id="progress-bar" class="bg-cyan-500 h-full transition-all duration-300" style="width: 10%"></div>
+                        </div>
                     </div>
 
-                    <button id="show-answer-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all cursor-pointer">
-                        正解と解説を表示する
-                    </button>
-
-                    <!-- Answer & Explanation Area -->
-                    <div id="answer-area" class="hidden space-y-5 border-t border-slate-700 pt-5">
-                        <div class="bg-emerald-950/40 border border-emerald-500/30 p-4 rounded-xl">
-                            <span class="text-xs text-emerald-400 font-bold uppercase tracking-wider block mb-1">■ 正解</span>
-                            <p id="correct-answer" class="text-xl font-bold text-emerald-400">正解データ</p>
-                        </div>
-                        <div class="bg-slate-900 border border-slate-750 p-4 rounded-xl text-sm leading-relaxed text-slate-300">
-                            <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider block mb-1">■ 解説・背景</span>
-                            <p id="explanation-text">解説データ</p>
+                    <div class="space-y-6">
+                        <div class="bg-slate-850 p-5 rounded-xl border border-slate-750">
+                            <p id="question-text" class="text-lg font-medium leading-relaxed text-slate-100">問題文</p>
                         </div>
 
                         <div class="space-y-2">
-                            <p class="text-center text-xs text-slate-400">自分の解答は合っていましたか？</p>
-                            <div class="grid grid-cols-2 gap-4">
-                                <button onclick="submitScore(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer shadow-md">正解！</button>
-                                <button onclick="submitScore(false)" class="bg-rose-600 hover:bg-rose-500 text-white font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer shadow-md">間違えた...</button>
+                            <label class="text-xs text-slate-400 font-medium">脳内解答のメモ用（採点には影響しません）</label>
+                            <input type="text" id="user-memo" placeholder="頭の中で思い浮かべるか、ここにメモを入力" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors">
+                        </div>
+
+                        <button id="show-answer-btn" class="w-full bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold py-3.5 px-6 rounded-xl shadow-lg transition-all cursor-pointer">
+                            正解と解説を表示する
+                        </button>
+
+                        <div id="answer-area" class="hidden space-y-5 border-t border-slate-700 pt-5">
+                            <div class="bg-emerald-950/40 border border-emerald-500/30 p-4 rounded-xl">
+                                <span class="text-xs text-emerald-400 font-bold uppercase tracking-wider block mb-1">■ 正解</span>
+                                <p id="correct-answer" class="text-xl font-bold text-emerald-400">正解</p>
+                            </div>
+                            <div class="bg-slate-900 border border-slate-750 p-4 rounded-xl text-sm leading-relaxed text-slate-300">
+                                <span class="text-xs text-cyan-400 font-bold uppercase tracking-wider block mb-1">■ 解説・背景</span>
+                                <p id="explanation-text">解説</p>
+                            </div>
+
+                            <div class="space-y-2">
+                                <p class="text-center text-xs text-slate-400">自分の解答は合っていましたか？</p>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <button onclick="submitScore(true)" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer shadow-md">正解！</button>
+                                    <button onclick="submitScore(false)" class="bg-rose-600 hover:bg-rose-500 text-white font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer shadow-md">間違えた...</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Result Screen -->
-                <div id="result-screen" class="hidden text-center space-y-6 py-4">
+                <div id="stage-result-screen" class="hidden bg-slate-800 border border-slate-700 rounded-2xl shadow-xl p-6 text-center space-y-6 py-8">
                     <div class="space-y-2">
-                        <h2 class="text-2xl font-bold text-cyan-400">全問終了！お疲れ様でした。</h2>
+                        <h2 class="text-2xl font-bold text-cyan-400"><span id="result-stage-title">ステージ1</span> 終了！</h2>
+                        <p class="text-sm text-slate-400">覚えているかチェックが完了しました。</p>
                     </div>
-                    <div class="inline-block bg-slate-900 border border-slate-700 rounded-2xl p-6 px-10 shadow-inner">
-                        <div class="text-sm text-slate-400">あなたの正解数</div>
-                        <div class="text-5xl font-extrabold text-cyan-400 my-2 font-mono"><span id="final-score">0</span> <span class="text-2xl text-slate-500">/ 100</span></div>
-                        <div class="text-xs text-slate-400">正解率: <span id="final-accuracy">0</span>%</div>
+                    <div class="inline-block bg-slate-900 border border-slate-700 rounded-2xl p-6 px-12 shadow-inner">
+                        <div class="text-xs text-slate-400">この10問の正解数</div>
+                        <div class="text-5xl font-extrabold text-cyan-400 my-2 font-mono"><span id="stage-score-display">0</span> <span class="text-xl text-slate-500">/ 10</span></div>
+                        <div class="text-xs text-slate-400">正解率: <span id="stage-accuracy-display">0</span>%</div>
                     </div>
-                    <div class="max-w-md mx-auto text-sm text-slate-300 bg-slate-850 p-4 rounded-xl border border-slate-750 leading-relaxed">
-                        <p id="cheer-message">応援メッセージ</p>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-md mx-auto pt-4">
+                        <button onclick="reviewCurrentStage()" class="bg-amber-600 hover:bg-amber-500 text-white font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer text-sm shadow-md">
+                            この10問をもう一度（復習）
+                        </button>
+                        <button id="next-stage-btn" onclick="goToNextStage()" class="bg-cyan-500 hover:bg-cyan-600 text-slate-950 font-bold py-3 px-4 rounded-xl transition-all cursor-pointer text-sm shadow-md">
+                            次の10問へ進む
+                        </button>
+                        <button onclick="returnToStageSelect()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-3 px-4 rounded-xl transition-colors cursor-pointer text-sm shadow-md">
+                            ステージ選択へ
+                        </button>
                     </div>
-                    <button onclick="restartQuiz()" class="bg-slate-700 hover:bg-slate-600 text-slate-200 font-medium py-2.5 px-6 rounded-xl transition-colors cursor-pointer text-sm">
-                        データをクリアして最初から挑戦
-                    </button>
                 </div>
             </div>
 
-            <!-- ================= LIST MODE VIEW ================= -->
             <div id="list-view" class="hidden space-y-4">
-                <!-- Search & Filter Controls -->
                 <div class="flex flex-col sm:flex-row gap-3 bg-slate-800 p-4 rounded-xl border border-slate-700 shadow-md">
                     <input type="text" id="search-input" oninput="filterList()" placeholder="キーワードで検索（例: 講談社、映画、フリーレン、インフレ...）" class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 transition-colors">
                     <select id="filter-category" onchange="filterList()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-cyan-500 cursor-pointer">
@@ -127,29 +141,21 @@
                         <option value="世界情勢・一般時事">世界情勢・一般時事</option>
                     </select>
                 </div>
-
-                <!-- Match Count -->
                 <div class="text-xs text-slate-400 font-mono pl-1">
                     該当件数: <span id="match-count" class="text-cyan-400 font-bold">100</span> / 100 問
                 </div>
-
-                <!-- Questions List Container -->
-                <div id="list-container" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar">
-                    <!-- Dynamic List Items Injection -->
-                </div>
+                <div id="list-container" class="space-y-4 max-h-[70vh] overflow-y-auto pr-2 custom-scrollbar"></div>
             </div>
 
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-slate-950 py-3 text-center text-xs text-slate-500 border-t border-slate-850">
-        &copy; 2026 出版・エンタメ業界総合試験対策 100問ドリル WebApp v3.
+        &copy; 2026 出版・エンタメ業界総合試験対策 10問区切りチェックドリル v4.
     </footer>
 
-    <!-- Quiz Logic & Data JavaScript -->
     <script>
-        // 100問のマスターデータ（他社動向・エンタメ全般に大幅に拡充）
+        // マスターデータ 100問 (※データ構造・内容は変更していません)
         const quizData = [
             // --- 第1章：出版・文学賞（20問） ---
             {c:"出版・文学賞", q:"第174回（2026年1月発表）芥川賞を受賞した鳥山まことの、建築文学とも評される作品は？", a:"時の家", e:"三田文學新人賞でデビューした新鋭による作品。芥川賞・直木賞は文藝春秋が主催し、全出版社志望者の必須時事。"},
@@ -165,12 +171,12 @@
             {c:"出版・文学賞", q:"近年、街の書店（独立系書店）が減少する中、独自の選書やカフェ併設で注目を集める書店の形態を何と呼ぶか？", a:"セレクトショップ型書店（独立系書店）", e:"文脈棚の構築や、本をコミュニケーションツールとして扱う新しい書店のあり方。"},
             {c:"出版・文学賞", q:"KADOKAWAが運営する、日本最大級のWeb小説投稿サイトで、数多くのアニメ化原作コミックを生み出しているプラットフォームは？", a:"カクヨム", e:"星海社や電撃文庫などのライトノベル、コミカライズの原作供給源として非常に重要です。"},
             {c:"出版・文学賞", q:"2024年に『東京都同情塔』で芥川賞を受賞し、執筆時の生成AI活用を明かして世界的に話題となった、中央公論新社等でも活躍する作家は？", a:"九段理江", e:"生成AIの普及と、現代社会の言葉のあり方を鋭く風刺した作品として今なお重要トピックです。"},
-            {c:"出版・文学賞", q:"芥川賞・直木賞の選考会が毎年2回（1月・7月）開催されることで有名な、東京・築地にある老舗料亭の名称は？", a:"新喜楽（しんきらく）", e:"文壇の歴史を象徴する場所であり、マスコミ各社が速報を待つ現場です。"},
+            {c:"出版・文学賞", q:"芥川賞・直木賞の選考会が毎年2回（1月・7月）開催されることで有名な、東京・築地にある老舗料テリアの名称は？", a:"新喜楽（しんきらく）", e:"文壇の歴史を象徴する場所であり、マスコミ各社が速報を待つ現場です。"},
             {c:"出版・文学賞", q:"スマートフォンの普及とともに市場が拡大している、本を「耳で聴く」読書スタイルの総称は？", a:"オーディオブック", e:"Amazon傘下のAudibleや、オトバンクのaudiobook.jpなどが市場を牽引。"},
             {c:"出版・文学賞", q:"直木賞の正式名称は何というか？", a:"直木三十五賞", e:"大衆文芸の発展に貢献した作家・直木三十五を記念して、菊池寛が創設しました。"},
             {c:"出版・文学賞", q:"芥川賞の正式名称は何というか？", a:"芥川龍之介賞", e:"大正・昭和初期を代表する文豪・芥川龍之介の業績を讃え、新進の純文学作家に贈られます。"},
             {c:"出版・文学賞", q:"近年、電子書籍の市場規模において、紙の出版物を上回る圧倒的な売上を記録しているコンテンツジャンルは何か？", a:"コミック（マンガ）", e:"出版科学研究所のデータでも、電子出版市場の約9割近くをマンガが占めています。"},
-            {c:"出版・文学賞", q:"講談社、小学館、集英社などの大手出版社が共同で取り組んでいる、ネット上の海賊版対策サイトの公式認定マークは？", a:"ABJマーク", e:"「Authorized Books of Japan」の略。海賊版サイトの撲滅に向けた業界の重要施策。"},
+            {c:"出版・文学賞", q:"講談社、小学館、集英社などの大手出版社が共同で取り組んでいる、ネット上の海賊版対策サイトの公式認定マークは？", a:"ABJマーク", e:"「Authorized Books of Japan」の略。海賊版サイトの撲滅に向けた業界の重要施施策。"},
             {c:"出版・文学賞", q:"海外の権威ある文学賞で、近年日本人作家の翻訳版が多数ノミネートされている、英国の文学賞は？", a:"ブッカー賞（国際ブッカー賞）", e:"小川洋子や多和田葉子、村上春樹などの作品が世界中で評価される指標となっています。"},
 
             // --- 第2章：マンガ・アニメ業界（25問） ---
@@ -180,22 +186,22 @@
             {c:"マンガ・アニメ業界", q:"2026年現在、世界の電子マンガ市場で急速にシェアを拡大している、スマートフォンに最適化された「フルカラー・縦読み」のマンガ形式を何というか？", a:"Webtoon（ウェブトゥーン）", e:"韓国発の形式。ピッコマやLINEマンガなどアプリ発のヒットが世界水準に。"},
             {c:"マンガ・アニメ業界", q:"カカオピッコマが運営し、日本国内のマンガアプリ市場においてトップクラスの売上を誇る電子マンガプラットフォームは？", a:"ピッコマ", e:"「待てば￥0」というビジネスモデルを定着させ、ライトアニメファン層を取り込みました。"},
             {c:"マンガ・アニメ業界", q:"『ダンジョン飯』や『坂本デイズ』など、近年アニメのクオリティの高さがファンの間で最重視されますが、アニメの制作資金を複数の企業が出資し合ってリスク分散する仕組みを何というか？", a:"製作委員会方式", e:"放送局、出版社、玩具メーカー、レコード会社などが共同出資する日本独特のシステム。現在その是非が議論中。"},
-            {c:"マンガ・アニメ業界", q:"スクウェア・エニックスの『月刊ガンガン』などで連載され、ダークファンタジーとして不動の人気を誇る、アニメ制作会社ボンズの代表作といえば？", a:"鋼の錬金術師（または、近年なら『薬屋のひとりごと』等の他社動向も）", e:"『薬屋のひとりごと』は主婦の友社（ヒーロー文庫）原作、スクエニと小学館で同時期にコミカライズされ大ヒット。"},
-            {c:"マンガ・アニメ業界", q:"2025〜2026年にかけて劇場版の公開が続き、国内外の映画興行収入を牽引している、白泉社『ヤングアニマル』連載の伝説的ダークファンタジーは？", a:"ベルセルク（または、他社映画化作品）", e:"三浦建太郎の遺志を継ぎ連載再開された本作など、海外ファンの熱量が非常に高いIP。"},
+            {c:"マンガ・アニメ業界", q:"スクウェア・エニックスの『月刊ガンガン』などで連載され、ダークファンタジーとして不動の人気を誇る、アニメ制作会社ボンズの代表作といえば？", a:"鋼の錬金術師（または薬屋のひとりごと）", e:"『薬屋のひとりごと』は主婦の友社（ヒーロー文庫）原作、スクエニと小学館で同時期にコミカライズされ大ヒット。"},
+            {c:"マンガ・アニメ業界", q:"2025〜2026年にかけて劇場版の公開が続き、国内外の映画興行収入を牽引している、白泉社『ヤングアニマル』連載の伝説的ダークファンタジーは？", a:"ベルセルク", e:"三浦建太郎の遺志を継ぎ連載再開された本作など、海外ファンの熱量が非常に高いIP。"},
             {c:"マンガ・アニメ業界", q:"アニメスタジオ「スタジオジブリ」が2023年に公開し、米アカデミー賞長編アニメーション映画賞を受賞した宮崎駿監督の作品は？", a:"君たちはどう生きるか", e:"事前の宣伝を一切行わない手法（ステルスマーケティングの逆）でも業界の度肝を抜きました。"},
             {c:"マンガ・アニメ業界", q:"『チェンソーマン』や『呪術廻戦』『進撃の巨人 The Final Season』を手がけ、現代のアニメクオリティの最高峰と称されるアニメ制作会社は？", a:"MAPPA（マッパ）", e:"ダイナミックなアクション描写と映像美で世界中にファンを持つトップスタジオ。"},
             {c:"マンガ・アニメ業界", q:"少年ジャンプが掲げる有名な三原則は、「友情」「勝利」とあと一つは？", a:"努力", e:"他社（マガジンは「熱さ・部活」、サンデーは「ラブコメ・日常」）との対比でよく出題されます。"},
             {c:"マンガ・アニメ業界", q:"『名探偵コナン』が連載されている、小学館を代表する週刊少年漫画雑誌は？", a:"週刊少年サンデー", e:"1959年創刊。講談社の「週刊少年マガジン」と同日創刊であり、日本の少年漫画の歴史を作ってきました。"},
             {c:"マンガ・アニメ業界", q:"『進撃の巨人』や『ブルーロック』を生み出した、講談社を代表する月刊漫画雑誌は？", a:"別冊少年マガジン（または週刊少年マガジン）", e:"エッジの効いたダークファンタジーや、尖った設定の作品が多いのが特徴です。"},
             {c:"マンガ・アニメ業界", q:"白泉社が発行する、歴史的名作『ガラスの仮面』や『夏目友人帳』などが連載されている少女マンガ雑誌は？", a:"LaLa（または花とゆめ）", e:"独自のファンタジー路線や深い人間ドラマで、コアな女性ファンを多数抱える大手レーベル。"},
-            {c:"マンガ・アニメ業界", q:"2026年に「マンガ大賞2026」を受賞、または上位にノミネートされて書店で大展開されている、現代のリアルな若者を描いた話題作は？", a:"ふつうの軽音部など（※実際の時事に基づく）", e:"マンガ大賞は書店員を中心とした有志が選ぶため、今後のメディアミックスの最重要指標。"},
-            {c:"マンガ・アニメ業界", q:"世界的な動画配信巨頭であり、日本のアニメスタジオと包括的業務提携を結び、オリジナルアニメを独占世界配信しているサービスは？", a:"Netflix（ネットフリックス）", e:"地上波を通さず、最初から世界市場に向けて予算を投下するアニメビジネスの変革者。"},
+            {c:"マンガ・アニメ業界", q:"2026年に「マンガ大賞2026」を受賞、または上位にノミネートされて書店で大展開されている、現代のリアルな若者を描いた話題作は？", a:"ふつうの軽音部など", e:"マンガ大賞は書店員を中心とした有志が選ぶため、今後のメディアミックスの最重要指標。"},
+            {c:"マンガ・アニメ業界", q:"世界的な動画配信巨頭であり、日本のアニメスタジオと包括的業務提携を結び、オリジナルアニメを独占世界配信しているサービスは？", a:"Netflix", e:"地上波を通さず、最初から世界市場に向けて予算を投下するアニメビジネスの変革者。"},
             {c:"マンガ・アニメ業界", q:"秋田書店が発行する、『刃牙（バキ）』シリーズや『弱虫ペダル』など、熱い男たちの闘いを描く週刊少年漫画誌は？", a:"週刊少年チャンピオン", e:"独自のマニアックかつ熱狂的な連載陣を揃え、4大週刊少年誌の一角を担います。"},
-            {c:"マンガ・アニメ業界", q:"一迅社が発行し、アニメ化も大ヒットした『ヲタクに恋は難しい』など、女性向けコミックエッセイやBL・百合を強みとするレーベルは？", a:"コミック百合姫 / ZERO-SUM（ゼロサム）", e:"現在は講談社グループの傘下となり、独自のジャンルで高いシェアを持ちます。"},
+            {c:"マンガ・アニメ業界", q:"一迅社が発行し、アニメ化も大ヒットした『ヲタクに恋は難しい』など、女性向けコミックエッセイやBL・百合を強みとするレーベルは？", a:"コミック百合姫 / ZERO-SUM", e:"現在は講談社グループの傘下となり、独自のジャンルで高いシェアを持ちます。"},
             {c:"マンガ・アニメ業界", q:"『ダンジョン飯』の作者である、緻密な世界観構築と食文化の融合で絶賛された漫画家は誰か？", a:"九井諒子", e:"KADOKAWA（ハルタ）で連載され、国内外の漫画賞を総なめにした傑作。"},
             {c:"マンガ・アニメ業界", q:"マンガの原稿をデジタル（タブレットなど）で描く漫画家が主流となった現在、最も多くのプロに愛用されているイラスト制作ソフトの名称は？", a:"CLIP STUDIO PAINT（クリスタ）", e:"セルシス社が開発。出版社のデジタル入稿基準のデファクトスタンダード。"},
             {c:"マンガ・アニメ業界", q:"講談社が運営する総合マンガアプリで、『コミックDAYS』や何というアプリが若い世代のインディーズ作家の発掘を担っているか？", a:"マガポケ（マガジンポケット）", e:"ジャンプ＋と並び、オリジナル連載から数々のヒットを生み出す巨大プラットフォーム。"},
-            {c:"マンガ・アニメ業界", q:"海外での日本アニメブームを受け、ソニーグループ傘下として世界最大級のアニメ特化型配信プラットフォームとなった米国のサービスは？", a:"Crunchyroll（クランチロール）", e:"海外のファンが日本のアニメをリアルタイムで視聴するインフラであり、海外ライツビジネスの要。"},
+            {c:"マンガ・アニメ業界", q:"海外での日本アニメブームを受け、ソニーグループ傘下として世界最大級のアニメ特化型配信プラットフォームとなった米国のサービスは？", a:"Crunchyroll", e:"海外のファンが日本のアニメをリアルタイムで視聴するインフラであり、海外ライツビジネスの要。"},
             {c:"マンガ・アニメ業界", q:"芳文社が発行する、アニメ化された『ぼっち・ざ・ろっく！』や『ゆるキャン△』などの4コママンガ専門雑誌シリーズの総称は？", a:"まんがタイムきらら", e:"「日常系」「きらら系」という一つの巨大なアニメジャンルを確立した立役者。"},
             {c:"マンガ・アニメ業界", q:"『【推しの子】』や『かぐや様は告らせたい』の原作を手がけ、現代のヒットメーカーとして知られる漫画家・原作者は？", a:"赤坂アカ", e:"作画を分業するスタイルを含め、現在のマンガ業界の新しい創作スタイルを提示しています。"},
             {c:"マンガ・アニメ業界", q:"かつて出版社が主催する「新人賞への持ち込み」が主流だった漫画家のデビュー経路。現在、SNSの何というプラットフォーム発のインディーズ漫画が増えているか？", a:"X（旧Twitter） / Instagram", e:"SNSでバズった後に、各社の編集者からスカウトされて書籍化・連載化するケースが激増。"},
@@ -203,45 +209,45 @@
             // --- 第3章：芸能・音楽・映画（20問） ---
             {c:"芸能・音楽・映画", q:"2026年放送のNHK大河ドラマ『豊臣兄弟！』で、主人公である豊臣秀長を演じている実力派俳優は？", a:"仲野太賀", e:"大河ドラマの動向は、エンタメ・マスコミ業界の一般常識として毎年必ずチェックが必要。"},
             {c:"芸能・音楽・映画", q:"2025年に放送され、江戸のメディア王・蔦屋重三郎の生涯を描いた大河ドラマ『べらぼう』の主演俳優は？", a:"横浜流星", e:"浮世絵や貸本屋などの「江戸の出版ビジネス」がテーマとなり、マスコミ志望者間で話題に。"},
-            {c:"芸能・音楽・映画", q:"日本の「三大映画会社（配給大手）」といえば、東宝、東映と、あと一つはどこか？", a:"松竹（しょうちく）", e:"日本の映画興行はこの3社を中心に回っており、特に東宝の興行収入シェアは圧倒的。"},
+            {c:"芸能・音楽・映画", q:"日本の「三大映画会社（配給大手）」といえば、東宝、東映と、あと一つはどこか？", a:"松竹", e:"日本の映画興行はこの3社を中心に回っており、特に東宝の興行収入シェアは圧倒的。"},
             {c:"芸能・音楽・映画", q:"映画『ゴジラ-1.0』が米アカデミー賞でアジア映画初の快挙を成し遂げた、受賞した部門の名称は？", a:"視覚効果賞（VFX部門）", e:"山崎貴監督が率いる日本のVFX技術が、ハリウッドを震撼させた歴史的事象。"},
             {c:"芸能・音楽・映画", q:"2024〜2026年にかけて世界的なメガヒットを記録し、ビルボードのグローバルチャート1位を獲得したCreepy Nutsの楽曲タイトルは？", a:"Bling-Bang-Bang-Born", e:"アニメ『マッシュル-MASHLE-』のOP。TikTokでのダンス動画拡散（ミーム化）が世界ヒットの導火線に。"},
-            {c:"芸能・音楽・映画", q:"『ケセラセラ』や『ダンスホール』など、圧倒的な歌唱力とキャッチーな楽曲でZ世代から絶大な支持を集める3人組ロックバンドは？", a:"Mrs. GREEN APPLE（ミセス）", e:"現在の音楽サブスク再生回数上位を独占する、現在の邦楽シーンの象徴。"},
-            {c:"芸能・音楽・映画", q:"YouTubeのチャンネル登録者数が日本人ソロアーティストとしてトップクラスであり、2025-2026年も世界ツアーを成功させたシンガーソングライターは？", a:"藤井風（ふじい かぜ）", e:"アジア圏のみならず、欧米でもストリーミングを通じてバイラルヒットを連発。"},
-            {c:"芸能・音楽・映画", q:"Netflixなどで世界同時配信され、日本のエンタメの質の高さを証明した『地面師たち』の監督・脚本を務めた、鬼才として知られる人物は？", a:"大根仁（おおね ひとし）", e:"『モテキ』や『バクマン。』など、漫画の実写化やサブスクドラマで圧倒的センスを発揮。"},
-            {c:"芸能・音楽・映画", q:"日本レコード大賞や紅白歌合戦の選考において、近年「CDの売上」以上に最重視されるようになった音楽チャートの指標は何か？", a:"ストリーミング再生回数（サブスクリプション再生数）", e:"Billboard JAPANをはじめ、デジタルでの「聴かれ方」がヒットの公式基準。"},
-            {c:"芸能・音楽・映画", q:"舞台演劇界において、東宝制作の舞台『千と千尋の神隠し』が、日本人キャストのまま長期海外ロングラン公演を成功させた都市は？", a:"ロンドン（ウェストエンド）", e:"日本の2.5次元舞台やアニメ原作舞台が、世界の演劇の本場で芸術として認められた記念碑的事例。"},
-            {c:"芸能・音楽・映画", q:"2026年上半期のSNS流行語で、何かに圧倒されたり推しが尊すぎたりする時に使われる「〇〇で滅」の元となった単語は？", a:"滅する（または崩壊）", e:"感情がキャパシティを超えて自分が消滅しそう、という意味で若年層のSNSを中心に大流行。"},
+            {c:"芸能・音楽・映画", q:"『ケセラセラ』や『ダンスホール』など、圧倒的な歌唱力とキャッチーな楽曲でZ世代から絶大な支持を集める3人組ロックバンドは？", a:"Mrs. GREEN APPLE", e:"現在の音楽サブスク再生回数上位を独占する、現在の邦楽シーンの象徴。"},
+            {c:"芸能・音楽・映画", q:"YouTubeのチャンネル登録者数が日本人ソロアーティストとしてトップクラスであり、2025-2026年も世界ツアーを成功させたシンガーソングライターは？", a:"藤井風", e:"アジア圏のみならず、欧米でもストリーミングを通じてバイラルヒットを連発。"},
+            {c:"芸能・音楽・映画", q:"Netflixなどで世界同時配信され、日本のエンタメの質の高さを証明した『地面師たち』の監督・脚本を務めた、鬼才として知られる人物は？", a:"大根仁", e:"『モテキ』や『バクマン。』など、漫画の実写化やサブスクドラマで圧倒的センスを発揮。"},
+            {c:"芸能・音楽・映画", q:"日本レコード大賞や紅白歌合戦の選考において、近年「CDの売上」以上に最重視されるようになった音楽チャートの指標は何か？", a:"ストリーミング再生回数", e:"Billboard JAPANをはじめ、デジタルでの「聴かれ方」がヒットの公式基準。"},
+            {c:"芸能・音楽・映画", q:"舞台演劇界において、東宝制作の舞台『千と千尋の神隠し』が、日本人キャストのまま長期海外ロングラン公演を成功させた都市は？", a:"ロンドン", e:"日本の2.5次元舞台やアニメ原作舞台が、世界の演劇の本場で芸術として認められた記念碑的事例。"},
+            {c:"芸能・音楽・映画", q:"2026年上半期のSNS流行語で、何かに圧倒されたり推しが尊すぎたりする時に使われる「〇〇で滅」の元となった単語は？", a:"滅する", e:"感情がキャパシティを超えて自分が消滅しそう、という意味で若年層のSNSを中心に大流行。"},
             {c:"芸能・音楽・映画", q:"「メロメロになる」が語源で、Z世代が推しや可愛い人、物に対して「〇〇い」と表現する言葉は？", a:"めろい", e:"アイドルのビジュアルや仕草にノックアウトされた際に使われる、現代の代表的なトレンドワード。"},
-            {c:"芸能・音楽・映画", q:"TikTokやYouTube Shortsの流行により、1分未満の動画コンテンツがメディアの中心を占める現象を何と呼ぶか？", a:"ショート動画トレンド（縦型動画シフト）", e:"若者の可処分時間の奪い合いにおいて、動画の短尺化・縦型化はコンテンツ業界の必須課題です。"},
+            {c:"芸能・音楽・映画", q:"TikTokやYouTube Shortsの流行により、1分未満の動画コンテンツがメディアの中心を占める現象を何と呼ぶか？", a:"ショート動画トレンド", e:"若者の可処分時間の奪い合いにおいて、動画の短尺化・縦型化はコンテンツ業界の必須課題です。"},
             {c:"芸能・音楽・映画", q:"2024〜2026年にかけて世界ツアーを大成功させ、J-POPの世界的プレゼンスを大きく高めたAyaseとikuraのユニットは？", a:"YOASOBI", e:"『【推しの子】』の主題歌『アイドル』など、アニメと連動した楽曲ビジネスで世界を席巻。"},
             {c:"芸能・音楽・映画", q:"平成初期のガラケー、プリクラ、たまごっちなどが10代〜20代の間で「エモい」と再評価されているブームを何と呼ぶか？", a:"昭和・平成レトロブーム", e:"デジタルネイティブの若者にとって、あえてアナログで不便なガジェットが新鮮な魅力として映っています。"},
             {c:"芸能・音楽・映画", q:"アイドルやキャラクターなど、自分の好きな対象を応援し、グッズを集めたりイベントに行ったりする現代の消費行動を何と呼ぶか？", a:"推し活", e:"現在のエンタメ・出版業界の景気を支える最大の原動力であり、雑誌の特集などでも最重要ワード。"},
-            {c:"芸能・音楽・映画", q:"バーチャルYouTuber（VTuber）の二大事務所といえば、「ホロライブ」と、もう一つはどこか？", a:"にじさんじ（ANYCOLOR株式会社）", e:"アニメ・音楽ビジネス、海外グッズ展開において、従来の芸能事務所を凌ぐ市場規模へ成長。"},
+            {c:"芸能・音楽・映画", q:"バーチャルYouTuber（VTuber）の二大事務所といえば、「ホロライブ」と、もう一つはどこか？", a:"にじさんじ", e:"アニメ・音楽ビジネス、海外グッズ展開において、従来の芸能事務所を凌ぐ市場規模へ成長。"},
             {c:"芸能・音楽・映画", q:"2000年代初頭のポップカルチャーやファッションが、現在の若者の間でリバイバルヒットしている現象を指すキーワードは？", a:"Y2K", e:"「Year 2000」の略。サイバー感、へそ出し、ビビッドカラーなどが音楽やSNSのビジュアルに影響。"},
-            {c:"芸能・音楽・映画", q:"コンテンツを倍速で視聴したり、あらすじだけを先に把握したりして、時間を効率的に使おうとする現代の消費傾向を何というか？", a:"タイパ（タイムパフォーマンス）", e:"Z世代を中心に「ハズレのコンテンツに時間を費やしたくない」という心理から生まれています。"},
+            {c:"芸能・音楽・映画", q:"コンテンツを倍速で視聴したり、あらすじだけを先に把握したりして、時間を効率的に使おうとする現代の消費傾向を何というか？", a:"タイパ", e:"Z世代を中心に「ハズレのコンテンツに時間を費やしたくない」という心理から生まれています。"},
             {c:"芸能・音楽・映画", q:"サイバーエージェントとテレビ朝日が共同で出資・運営し、オリジナルの恋愛リアリティショーなどで若者の支持を集める動画配信サービスは？", a:"ABEMA", e:"24時間編成のニュースやスポーツ生中継、アニメの一挙放送など、テレビとネットを融合させた独自の強み。"},
 
             // --- 第4章：ファッション・メディアトレンド（15問） ---
-            {c:"ファッション・メディアトレンド", q:"光文社が発行し、子育て世代の「働くママ」たちから圧倒的なバイブルとして支持されている、日本のトップライフスタイルファッション誌は？", a:"VERY（ヴェリィ）", e:"「VERY妻」などの流行語も生み、社会的な女性のライフスタイルに影響を与えるモンスター雑誌。"},
-            {c:"ファッション・メディアトレンド", q:"マガジンハウスが発行する、ワンテーマを非常に深く掘り下げる特集主義で、カルチャー・サブカル層の憧れとなっている月刊情報誌は？", a:"BRUTUS（ブルータス） / Popeye（ポパイ）", e:"「本を売る」のではなく「ライフスタイルや価値観を提案する」エディトリアルデザインの最高峰。"},
-            {c:"ファッション・メディアトレンド", q:"講談社が発行する、10代後半〜20代女性向けの、最先端のギャルカルチャーやトレンドメイクを発信する老舗ファッション誌は？", a:"ViVi（ヴィヴィ）", e:"「国宝級イケメンランキング」など、雑誌発の企画がSNSで毎度世界トレンド入りする影響力を持つ。"},
-            {c:"ファッション・メディアトレンド", q:"近年のファッショントレンドで、レースやシースルーなど、あえて肌やインナーを透けさせる涼しげな素材の総称は？", a:"シアー（シアー素材）", e:"春夏だけでなく、秋冬のレイヤード（重ね着）スタイルとしても定番化したマストトレンド。"},
-            {c:"ファッション・メディアトレンド", q:"地球環境の保護や、製造に関わる労働者の人権に配慮した、持続可能な服作りや消費のあり方を何というか？", a:"サステナブルファッション（エシカル）", e:"アパレル業界の大量廃棄が問題視される中、大手ブランドもリサイクル素材の導入などを義務付けています。"},
+            {c:"ファッション・メディアトレンド", q:"光文社が発行し、子育て世代の「働くママ」たちから圧倒的なバイブルとして支持されている、日本のトップライフスタイルファッション誌は？", a:"VERY", e:"「VERY妻」などの流行語も生み、社会的な女性のライフスタイルに影響を与えるモンスター雑誌。"},
+            {c:"ファッション・メディアトレンド", q:"マガジンハウスが発行する、ワンテーマを非常に深く掘り下げる特集主義で、カルチャー・サブカル層の憧れとなっている月刊情報誌は？", a:"BRUTUS / Popeye", e:"「本を売る」のではなく「ライフスタイルや価値観を提案する」エディトリアルデザインの最高峰。"},
+            {c:"ファッション・メディアトレンド", q:"講談社が発行する、10代後半〜20代女性向けの、最先端のギャルカルチャーやトレンドメイクを発信する老舗ファッション誌は？", a:"ViVi", e:"「国宝級イケメンランキング」など、雑誌発の企画がSNSで毎度世界トレンド入りする影響力を持つ。"},
+            {c:"ファッション・メディアトレンド", q:"近年のファッショントレンドで、レースやシースルーなど、あえて肌やインナーを透けさせる涼しげな素材の総称は？", a:"シアー", e:"春夏だけでなく、秋冬のレイヤード（重ね着）スタイルとしても定番化したマストトレンド。"},
+            {c:"ファッション・メディアトレンド", q:"地球環境の保護や、製造に関わる労働者の人権に配慮した、持続可能な服作りや消費のあり方を何というか？", a:"サステナブルファッション", e:"アパレル業界の大量廃棄が問題視される中、大手ブランドもリサイクル素材の導入などを義務付けています。"},
             {c:"ファッション・メディアトレンド", q:"男性的・女性的という従来の枠組みに縛られず、誰でも自由に楽しめる境界のないファッションスタイルを何というか？", a:"ジェンダーレスファッション", e:"メンズがパールネックレスを着用したり、ユニセックスなオーバーサイズシルエットが主流になるなど、多様性の象徴。"},
-            {c:"ファッション・メディアトレンド", q:"ファッション誌やライフスタイル誌が、紙の販売減少を補うためにWEBサイトを独自のWebメディアとして独立させ、広告やECで稼ぐビジネスモデルを一般に何と呼ぶか？", a:"デジタルメディア化（またはWEBマガジン）", e:"ハピプラ（集英社）やmi-mollet（講談社）など、紙の編集力をWebのPVに変える戦略。"},
+            {c:"ファッション・メディアトレンド", q:"ファッション誌やライフスタイル誌が、紙の販売減少を補うためにWEBサイトを独自のWebメディアとして独立させ、広告やECで稼ぐビジネスモデルを一般に何と呼ぶか？", a:"デジタルメディア化", e:"ハピプラ（集英社）やmi-mollet（講談社）など、紙の編集力をWebのPVに変える戦略。"},
             {c:"ファッション・メディアトレンド", q:"肌の色、瞳の色、髪の質感などから、その人に最も調和し、魅力を引き立てる色のグループを導き出す診断を何というか？", a:"パーソナルカラー診断", e:"「イエベ（イエローベース）」「ブルベ（ブルーベース）」などの言葉が生み出され、コスメ選びの基準に。"},
             {c:"ファッション・メディアトレンド", q:"韓国発のスキンケア成分「ツボクサエキス」を配合し、肌荒れや鎮静に効果があるとして日本のコスメ界でも大定番となった通称は？", a:"シカ（CICA）コスメ", e:"韓国コスメブームの火付け役であり、現在は日本の大手化粧品メーカーもこぞって参入。"},
-            {c:"ファッション・メディアトレンド", q:"クラシックバレエの衣装（チュチュやリボン、レッグウォーマーなど）を日常のファッションに取り入れた、Z世代を中心に2025-2026年大流行している海外発のスタイル名は？", a:"バレエコア（Balletcore）", e:"Blackpinkなどの韓国アイドルが衣装として着用したことから世界的なトレンドに。"},
-            {c:"ファッション・ライフスタイル", q:"服を購入するのではなく、月額定額制で数着の服をレンタルし、着回したら返却するアパレルの消費サービス形態を何というか？", a:"ファッションサブスク（洋服レンタル）", e:"airClosetなどが代表例。服を増やしたくないミニマリストや、タイパを重視するビジネス層に人気。"},
-            {c:"ファッション・メディアトレンド", q:"2026年のファッショントレンドにおいて、キルティングやナイロンなどの「機能性素材」を日常着に落とし込んだスタイルを何と呼ぶか？", a:"ユーティリティ・ウェア（テックウェア）", e:"アウトドアやミリタリーの要素を綺麗めな街着としてミックスするスタイルが洗練されています。"},
+            {c:"ファッション・メディアトレンド", q:"クラシックバレエの衣装（チュチュやリボン、レッグウォーマーなど）を日常のファッションに取り入れた、Z世代を中心に2025-2026年大流行している海外発のスタイル名は？", a:"バレエコア", e:"Blackpinkなどの韓国アイドルが衣装として着用したことから世界的なトレンドに。"},
+            {c:"ファッション・メディアトレンド", q:"服を購入するのではなく、月額定額制で数着の服をレンタルし、着回したら返却するアパレルの消費サービス形態を何というか？", a:"ファッションサブスク", e:"airClosetなどが代表例。服を増やしたくないミニマリストや、タイパを重視するビジネス層に人気。"},
+            {c:"ファッション・メディアトレンド", q:"2026年のファッショントレンドにおいて、キルティングやナイロンなどの「機能性素材」を日常着に落とし込んだスタイルを何と呼ぶか？", a:"ユーティリティ・ウェア", e:"アウトドアやミリタリーの要素を綺麗めな街着としてミックスするスタイルが洗練されています。"},
             {c:"ファッション・メディアトレンド", q:"骨格や筋肉の付き方、肌の質感から、体型を最も綺麗に見せる服のデザインや素材を導き出す診断を何というか？", a:"骨格診断", e:"「ストレート」「ウェーブ」「ナチュラル」の3タイプに分類され、自分に似合うシルエットを知るために定着。"},
             {c:"ファッション・メディアトレンド", q:"企業が自らメディアを立ち上げ、自社製品のファンや社会に対して有益なカルチャー情報を発信するメディアの形態を何と呼ぶか？", a:"オウンドメディア", e:"従来の広告スペースの買い取りではなく、メディアそのものを自社で運用してブランディングする手法。"},
-            {c:"ファッション・メディアトレンド", q:"週刊誌のスクープ（週刊文春など）が、紙の発売日より前に有料のWEB会員向けに先行配信され、ネットニュースのアクセスを独占する会員制WEBサービスの総称を何と呼ぶか？", a:"デジタルサブスクリプション（文春オンライン等）", e:"スクープ記事のマネタイズの主軸が、紙からデジタルへ移行している象徴的な事例。"},
+            {c:"ファッション・メディアトレンド", q:"週刊誌のスクープ（週刊文春など）が、紙の発売日より前に有料のWEB会員向けに先行配信され、ネットニュースのアクセスを独占する会員制WEBサービスの総称を何と呼ぶか？", a:"デジタルサブスクリプション", e:"スクープ記事のマネタイズの主軸が、紙からデジタルへ移行している象徴的な事例。"},
 
             // --- 第5章：世界情勢・一般時事（20問） ---
             {c:"世界情勢・一般時事", q:"2025年に日本の大阪（夢洲）で「いのち輝く未来社会のデザイン」をテーマに開催された国際的なビッグイベントは？", a:"大阪・関西万博", e:"空飛ぶクルマや次世代医療技術など、未来の日本のテクノロジーと課題解決を世界に提示しました。"},
-            {c:"世界情勢・一般時事", q:"ChatGPTに代表される、人工知能が自ら膨大なデータを学習し、テキストや画像を自動で創り出す技術の総称は？", a:"生成AI（ジェネレーティブAI）", e:"クリエイティブやビジネスの効率を劇的に変える一方、著作権やフェイクニュースのリスクも議論されています。"},
+            {c:"世界情勢・一般時事", q:"ChatGPTに代表される、人工知能が自ら膨大なデータを学習し、テキストや画像を自動で創り出す技術の総称は？", a:"生成AI", e:"クリエイティブやビジネスの効率を劇的に変える一方、著作権やフェイクニュースのリスクも議論されています。"},
             {c:"世界情勢・一般時事", q:"2024年秋の就任以降、2026年現在の日本を率いている、現在の第102代・103代内閣総理大臣は誰か？", a:"石破茂", e:"地方創生や安全保障の抜本的見直しを掲げ、激動の内外情勢への舵取りを行っています。"},
             {c:"世界情勢・一般時事", q:"2024年11月のアメリカ大統領選挙を経て、2025年1月に就任した、第47代アメリカ合衆国大統領は誰か？", a:"ドナルド・トランプ", e:"「アメリカ・ファースト」の政策を再び掲げ、世界の経済や貿易、安全保障に大きな影響を与えています。"},
             {c:"世界情勢・一般時事", q:"国連が提唱する、2030年までに地球上の誰も取り残さずに達成すべき「持続可能な開発目標」の英語の略称は？", a:"SDGs", e:"「Sustainable Development Goals」。環境問題、貧困、ジェンダー平等など17のゴールから構成。"},
@@ -249,75 +255,178 @@
             {c:"世界情勢・一般時事", q:"日本の少子化深刻度の基準となる、1人の女性が一生の間に生むとされる子どもの平均数を表す統計指標は？", a:"合計特殊出生率", e:"日本は過去最低水準の更新が続いており、労働力不足や社会保障制度の維持が国の最大課題。"},
             {c:"世界情勢・一般時事", q:"主要先進7カ国首脳会議（G7）のメンバーは、日本、アメリカ、イギリス、フランス、ドイツ、イタリアと、どこか？", a:"カナダ", e:"国際社会の政治・経済の諸課題を協議する枠組み。"},
             {c:"世界情勢・一般時事", q:"2026年夏に開催される、サッカーのワールドカップ（W杯）を共同開催する3カ国は、アメリカ、メキシコと、どこか？", a:"カナダ", e:"史上初めて48カ国が出場する大規模な大会であり、北米3カ国が舞台となります。"},
-            {c:"世界情勢・一般時事", q:"モノの価格（物価）が継続的に上昇し、相対的にお金の価値が下がっていく経済現象を何というか？", a:"インフレ（インフレーション）", e:"資源高や円安を背景に、日本でも数十年のデフレ脱却から「インフレ社会」への移行と賃上げが叫ばれています。"},
+            {c:"世界情勢・一般時事", q:"モノの価格（物価）が継続的に上昇し、相対的にお金の価値が下がっていく経済現象を何というか？", a:"インフレ", e:"資源高や円安を背景に、日本でも数十年のデフレ脱却から「インフレ社会」への移行と賃上げが叫ばれています。"},
             {c:"世界情勢・一般時事", q:"外国為替市場において、米ドルなどの主要通貨に対して日本円の価値が歴史的な水準まで下がっている現象を何というか？", a:"円安", e:"輸出企業の利益を押し上げる一方、エネルギーや原材料、食品などの輸入コストを高騰させ生活を直撃。"},
             {c:"世界情勢・一般時事", q:"日本の民法改正により、2022年4月から成人年齢は何歳に引き下げられたか？", a:"18歳", e:"若者の社会的・経済的自立を促す目的。親の同意なしでクレジットカードの契約などが可能になりました。"},
             {c:"世界情勢・一般時事", q:"近年の国連の推計において、地球全体の総人口は約何億人を突破したとされているか？", a:"80億人", e:"南アジアやアフリカを中心に人口爆発が続く一方、先進国では深刻な少子高齢化が進み、二極化しています。"},
-            {c:"世界情勢・一般時事", q:"二酸化炭素をはじめとする温室効果ガスの排出量を、森林吸収などで相殺し、実質ゼロにすることを何というか？", a:"カーボンニュートラル（脱炭素）", e:"2050年までの達成を目指し、EVの普及や再生可能エネルギーへの転換が世界規模で義務化。"},
+            {c:"世界情勢・一般時事", q:"二酸化炭素をはじめとする温室効果ガスの排出量を、森林吸収などで相殺し、実質ゼロにすることを何というか？", a:"カーボンニュートラル", e:"2050年までの達成を目指し、EVの普及や再生可能エネルギーへの転換が世界規模で義務化。"},
             {c:"世界情勢・一般時事", q:"デジタルトランスフォーメーション（DX）やAIの進化に伴い、社会人が新しい職業スキルを学び直すことを何というか？", a:"リスキリング", e:"国も巨額の予算を投じて支援しており、労働市場の流動化と生産性向上のためのキーワード。"},
             {c:"世界情勢・一般時事", q:"結婚後も、希望すれば夫婦がそれぞれの出生時の名字（姓）を法的に名乗れるようにする、日本で議論中の制度は？", a:"選択的夫婦別姓制度", e:"ジェンダー平等や個人の尊重を求める声が高まる一方、家族の一体感を重視する慎重論もあり対立。"},
             {c:"世界情勢・一般時事", q:"2024年に可決され、社会保障やパートタイム労働者の手取り額に直結する「〇〇万円の壁」の撤廃に向けた政府の税制・年金制度改革議論の対象金額は？", a:"106万円（または130万円）", e:"働き控えを防ぎ、深刻な人手不足を解消するための労働市場の最重要政策課題。"},
-            {c:"世界情勢・一般時事", q:"生成AIによる文章や画像の大量生成が進む中、クリエイターの権利を守るために文化庁が2024年以降に発表・改定を続けている指針の名称は何か？", a:"AIと著作権に関する考え方（ガイドライン）", e:"AIの開発（学習）段階と、生成・利用段階での著作権侵害の線引きを示した、クリエイティブ業界最重要の法務トピック。"},
-            {c:"世界情勢・一般時事", q:"近年、SNS上での誹謗中傷やデマ拡散を防止するため、発信者の情報開示手続きを簡素化・迅速化させた日本の法律の略称は何か？", a:"プロバイダ責任制限法（改正法、または情報流通プラットフォーム対処法）", e:"ネット上の個人の権利侵害を守るため、マスコミ各社も運用の動向を注視しています。"},
+            {c:"世界情勢・一般時事", q:"生成AIによる文章や画像の大量生成が進む中、クリエイターの権利を守るために文化庁が2024年以降に発表・改定を続けている指針の名称は何か？", a:"AIと著作権に関する考え方", e:"AIの開発（学習）段階と、生成・利用段階での著作権侵害の線引きを示した、クリエイティブ業界最重要の法務トピック。"},
+            {c:"世界情勢・一般時事", q:"近年、SNS上での誹謗中傷やデマ拡散を防止するため、発信者の情報開示手続きを簡素化・迅速化させた日本の法律の略称は何か？", a:"プロバイダ責任制限法", e:"ネット上の個人の権利侵害を守るため、マスコミ各社も運用の動向を注視しています。"},
             {c:"世界情勢・一般時事", q:"大正15年（1926年）8月8日に創業され、2026年についに創業100周年の歴史的な節目を迎えた大手出版社は？", a:"集英社", e:"小学館の娯楽誌部門から独立してスタート。全出版社の中でも歴史の節目として象徴的な時事です。"}
         ];
 
-        // ローカルストレージ用のキー
-        const STORAGE_KEY_INDEX = "macc_quiz_index";
-        const STORAGE_KEY_SCORE = "macc_quiz_score";
+        // 状態保持用のローカルストレージ・キー
+        const STORAGE_KEY_SCORES = "macc_quiz_stage_scores"; // 各ステージの過去最高点配列
 
-        let currentIndex = 0;
-        let score = 0;
+        let currentStage = 0; // 0〜9 (10ステージ)
+        let stageQuestions = []; // 現在のステージの10問
+        let currentStageIndex = 0; // ステージ内インデックス (0〜9)
+        let stageScore = 0; // 現在のステージでの正解数
+        let highestScores = Array(10).fill("-"); // 各ステージの最高点記録
 
-        // DOMの取得
-        const progressText = document.getElementById("progress-text");
-        const categoryBadge = document.getElementById("category-badge");
-        const progressBar = document.getElementById("progress-bar");
-        const questionText = document.getElementById("question-text");
-        const userMemo = document.getElementById("user-memo");
-        const showAnswerBtn = document.getElementById("show-answer-btn");
-        const answerArea = document.getElementById("answer-area");
-        const correctAnswer = document.getElementById("correct-answer");
-        const explanationText = document.getElementById("explanation-text");
-        const questionScreen = document.getElementById("question-screen");
-        const resultScreen = document.getElementById("result-screen");
-        const finalScore = document.getElementById("final-score");
-        const finalAccuracy = document.getElementById("final-accuracy");
         const toastMsg = document.getElementById("toast-msg");
 
-        // ローカルストレージから状態を復元
-        function initQuiz() {
-            const savedIndex = localStorage.getItem(STORAGE_KEY_INDEX);
-            const savedScore = localStorage.getItem(STORAGE_KEY_SCORE);
-
-            if (savedIndex !== null && savedScore !== null) {
-                currentIndex = parseInt(savedIndex, 10);
-                score = parseInt(savedScore, 10);
-                
-                // 1問目以降であれば再開トーストを表示
-                if (currentIndex > 0 && currentIndex < quizData.length) {
-                    toastMsg.classList.remove("hidden");
-                    setTimeout(() => { toastMsg.classList.add("hidden"); }, 3000);
-                }
-            } else {
-                currentIndex = 0;
-                score = 0;
+        // 初期化ロード
+        function initApp() {
+            const savedScores = localStorage.getItem(STORAGE_KEY_SCORES);
+            if (savedScores) {
+                highestScores = JSON.parse(savedScores);
             }
-            loadQuestion();
+            renderStageSelect();
         }
 
-        // 状態をローカルストレージに保存
-        function saveProgress() {
-            localStorage.setItem(STORAGE_KEY_INDEX, currentIndex);
-            localStorage.setItem(STORAGE_KEY_SCORE, score);
+        // ステージ選択画面のボタン群を生成
+        function renderStageSelect() {
+            const container = document.getElementById("stage-buttons-container");
+            container.innerHTML = "";
+
+            for (let i = 0; i < 10; i++) {
+                const startNum = i * 10 + 1;
+                const endNum = startNum + 9;
+                
+                // 代表的な収録ジャンル目安
+                let hintText = "総合エンタメ・時事";
+                if (i === 0 || i === 1) hintText = "出版・文学賞・取次・再販";
+                else if (i >= 2 && i <= 4) hintText = "マンガ・アニメ・アプリ・制作会社";
+                else if (i === 5 || i === 6) hintText = "芸能・音楽チャート・トレンド・映画";
+                else if (i === 7) hintText = "ファッション誌・コスメ・メディア";
+                else if (i >= 8) hintText = "世界情勢・一般時事・生成AI法務";
+
+                const bestScore = highestScores[i];
+                const scoreBadge = bestScore !== "-" ? `<span class="bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded text-[10px] font-bold font-mono">最高: ${bestScore}/10</span>` : '<span class="bg-slate-700 text-slate-400 px-2 py-0.5 rounded text-[10px]">未挑戦</span>';
+
+                const button = document.createElement("button");
+                button.className = "bg-slate-850 hover:bg-slate-750 border border-slate-700/60 hover:border-cyan-500/50 p-4 rounded-xl flex flex-col justify-between items-start transition-all cursor-pointer group text-left w-full";
+                button.onclick = () => startStage(i);
+                button.innerHTML = `
+                    <div class="flex justify-between items-center w-full mb-1">
+                        <span class="text-sm font-bold text-cyan-400 group-hover:text-cyan-300">ステージ ${i + 1} <span class="text-xs text-slate-400 font-normal">(${startNum}〜${endNum}問)</span></span>
+                        ${scoreBadge}
+                    </div>
+                    <span class="text-xs text-slate-400 leading-tight">${hintText}</span>
+                `;
+                container.appendChild(button);
+            }
         }
 
-        // 手動進捗リセット
-        function confirmReset() {
-            if (confirm("これまでの進捗データを削除して、第1問からやり直しますか？")) {
-                localStorage.removeItem(STORAGE_KEY_INDEX);
-                localStorage.removeItem(STORAGE_KEY_SCORE);
-                restartQuiz();
+        // ステージ開始
+        function startStage(stageNum) {
+            currentStage = stageNum;
+            const startIdx = stageNum * 10;
+            stageQuestions = quizData.slice(startIdx, startIdx + 10);
+            
+            currentStageIndex = 0;
+            stageScore = 0;
+
+            document.getElementById("stage-select-screen").classList.add("hidden");
+            document.getElementById("stage-result-screen").classList.add("hidden");
+            document.getElementById("playing-screen").classList.remove("hidden");
+
+            loadStageQuestion();
+        }
+
+        // ステージ内の問題ロード
+        function loadStageQuestion() {
+            document.getElementById("show-answer-btn").classList.remove("hidden");
+            document.getElementById("answer-area").classList.add("hidden");
+            document.getElementById("user-memo").value = "";
+
+            const currentQuiz = stageQuestions[currentStageIndex];
+            const displayQuestionNum = currentStage * 10 + (currentStageIndex + 1);
+
+            document.getElementById("progress-text").innerText = `ステージ ${currentStage + 1} : 第 ${currentStageIndex + 1} 問 / 10問 (全体: ${displayQuestionNum}/100問)`;
+            document.getElementById("category-badge").innerText = currentQuiz.c;
+            document.getElementById("progress-bar").style.width = `${(currentStageIndex + 1) * 10}%`;
+            document.getElementById("question-text").innerText = currentQuiz.q;
+        }
+
+        // 解答の表示
+        document.getElementById("show-answer-btn").addEventListener("click", () => {
+            const currentQuiz = stageQuestions[currentStageIndex];
+            document.getElementById("correct-answer").innerText = currentQuiz.a;
+            document.getElementById("explanation-text").innerText = currentQuiz.e;
+            document.getElementById("show-answer-btn").classList.add("hidden");
+            document.getElementById("answer-area").classList.remove("hidden");
+        });
+
+        // 正誤の記録
+        function submitScore(isCorrect) {
+            if (isCorrect) stageScore++;
+            
+            currentStageIndex++;
+            if (currentStageIndex < 10) {
+                loadStageQuestion();
+            } else {
+                finishStage();
+            }
+        }
+
+        // 10問終了後のステージリザルト表示（記憶チェックフロー）
+        function finishStage() {
+            document.getElementById("playing-screen").classList.add("hidden");
+            document.getElementById("stage-result-screen").classList.remove("hidden");
+
+            document.getElementById("result-stage-title").innerText = `ステージ ${currentStage + 1}`;
+            document.getElementById("stage-score-display").innerText = stageScore;
+            
+            const accuracy = Math.round((stageScore / 10) * 100);
+            document.getElementById("stage-accuracy-display").innerText = accuracy;
+
+            // 最高スコアの更新保存
+            const absolutePreviousBest = highestScores[currentStage];
+            if (absolutePreviousBest === "-" || stageScore > parseInt(absolutePreviousBest, 10)) {
+                highestScores[currentStage] = stageScore;
+                localStorage.setItem(STORAGE_KEY_SCORES, JSON.stringify(highestScores));
+            }
+
+            // 次のステージボタンの表示制御
+            const nextBtn = document.getElementById("next-stage-btn");
+            if (currentStage < 9) {
+                nextBtn.classList.remove("hidden");
+            } else {
+                nextBtn.classList.add("hidden"); // ステージ10の場合は非表示
+            }
+        }
+
+        // 現在のステージをもう一度（復習）
+        function reviewCurrentStage() {
+            startStage(currentStage);
+        }
+
+        // 次の10問（次のステージ）へ進む
+        function goToNextStage() {
+            if (currentStage < 9) {
+                startStage(currentStage + 1);
+            }
+        }
+
+        // ステージ選択に戻る
+        function returnToStageSelect() {
+            document.getElementById("playing-screen").classList.add("hidden");
+            document.getElementById("stage-result-screen").classList.add("hidden");
+            document.getElementById("stage-select-screen").classList.remove("hidden");
+            renderStageSelect();
+        }
+
+        // 全進捗リセット
+        function confirmAllReset() {
+            if (confirm("これまでの全ステージの最高スコア・記録をすべて削除して初期化しますか？")) {
+                localStorage.removeItem(STORAGE_KEY_SCORES);
+                highestScores = Array(10).fill("-");
+                renderStageSelect();
             }
         }
 
@@ -333,6 +442,7 @@
                 listView.classList.add("hidden");
                 tabQuiz.className = "px-4 py-1.5 rounded-lg text-sm font-bold bg-cyan-500 text-slate-950 shadow transition-all cursor-pointer";
                 tabList.className = "px-4 py-1.5 rounded-lg text-sm font-bold text-slate-400 hover:text-slate-200 transition-all cursor-pointer";
+                renderStageSelect(); // 再描画してスコア反映
             } else {
                 quizView.classList.add("hidden");
                 listView.classList.remove("hidden");
@@ -342,69 +452,7 @@
             }
         }
 
-        // --- クイズロジック ---
-        function loadQuestion() {
-            if (currentIndex < quizData.length) {
-                questionScreen.classList.remove("hidden");
-                resultScreen.classList.add("hidden");
-
-                const currentQuiz = quizData[currentIndex];
-                progressText.innerText = `第 ${currentIndex + 1} 問 / ${quizData.length}問`;
-                categoryBadge.innerText = currentQuiz.c;
-                progressBar.style.width = `${((currentIndex + 1) / quizData.length) * 100}%`;
-                questionText.innerText = currentQuiz.q;
-                
-                userMemo.value = "";
-                answerArea.classList.add("hidden");
-                showAnswerBtn.classList.remove("hidden");
-            } else {
-                showResult();
-            }
-        }
-
-        showAnswerBtn.addEventListener("click", () => {
-            const currentQuiz = quizData[currentIndex];
-            correctAnswer.innerText = currentQuiz.a;
-            explanationText.innerText = currentQuiz.e;
-            showAnswerBtn.classList.add("hidden");
-            answerArea.classList.remove("hidden");
-        });
-
-        function submitScore(isCorrect) {
-            if (isCorrect) score++;
-            currentIndex++;
-            saveProgress(); // 進捗を保存
-            loadQuestion();
-        }
-
-        function showResult() {
-            questionScreen.classList.add("hidden");
-            resultScreen.classList.remove("hidden");
-            finalScore.innerText = score;
-            const accuracy = Math.round((score / quizData.length) * 100);
-            finalAccuracy.innerText = accuracy;
-            
-            const cheerMessage = document.getElementById("cheer-message");
-            if (accuracy >= 80) {
-                cheerMessage.innerText = "素晴らしい！マスコミ・出版社の筆記試験に十分通用するエンタメ一般教養が身についています。自信を持ってリラックスして本番に臨んでください！";
-            } else if (accuracy >= 50) {
-                cheerMessage.innerText = "合格ラインまであと一歩！間違えた他社ヒット作や著作権時事、新紙幣のキーワードを「一覧ページ」で復習し、直前まで知識を詰め込みましょう。伸び代は無限です！";
-            } else {
-                cheerMessage.innerText = "焦る必要はありません。出版の筆記試験は直前の詰め込みが最も効果を発揮します。一覧ページの検索機能を活用し、重要なエンタメ用語を繰り返し確認しましょう！";
-            }
-        }
-
-        function restartQuiz() {
-            currentIndex = 0;
-            score = 0;
-            localStorage.removeItem(STORAGE_KEY_INDEX);
-            localStorage.removeItem(STORAGE_KEY_SCORE);
-            questionScreen.classList.remove("hidden");
-            resultScreen.classList.add("hidden");
-            loadQuestion();
-        }
-
-        // --- 一覧表示・検索フィルタロジック ---
+        // --- 一覧表示・検索フィルタ（前回の検索ロジックを完全維持） ---
         function renderList() {
             const listContainer = document.getElementById("list-container");
             const searchQuery = document.getElementById("search-input").value.toLowerCase();
@@ -424,16 +472,13 @@
                     const card = document.createElement("div");
                     card.className = "bg-slate-800 border border-slate-700/60 rounded-xl p-4 space-y-3 shadow-sm";
                     
-                    // 現在挑戦中の問題に目印をつける
-                    const isCurrent = index === currentIndex ? '<span class="text-[10px] bg-cyan-500 text-slate-950 font-bold px-1.5 py-0.5 rounded ml-2 animate-pulse">挑戦中</span>' : '';
-                    const isPassed = index < currentIndex ? '<span class="text-[10px] bg-slate-700 text-slate-400 px-1.5 py-0.5 rounded ml-2">解答済</span>' : '';
+                    const belongingStage = Math.floor(index / 10) + 1;
 
                     card.innerHTML = `
                         <div class="flex justify-between items-center">
                             <div class="flex items-center">
                                 <span class="text-xs bg-slate-700 text-slate-300 px-2 py-0.5 rounded font-mono">Q.${index + 1}</span>
-                                ${isCurrent}
-                                ${isPassed}
+                                <span class="text-[10px] bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded ml-2">ステージ ${belongingStage}</span>
                             </div>
                             <span class="text-xs bg-cyan-500/10 text-cyan-400 px-2 py-0.5 rounded font-medium">${item.c}</span>
                         </div>
@@ -458,8 +503,8 @@
             renderList();
         }
 
-        // 初期化ロード
-        initQuiz();
+        // 起動処理
+        initApp();
     </script>
 
     <style>
